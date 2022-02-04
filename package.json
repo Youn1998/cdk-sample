@@ -1,8 +1,8 @@
 {
-  "name": "cdk-sample",
+  "name": "app",
   "version": "0.1.0",
   "bin": {
-    "cdk-sample": "bin/cdk-sample.js"
+    "app": "bin/app.js"
   },
   "scripts": {
     "build": "tsc",
