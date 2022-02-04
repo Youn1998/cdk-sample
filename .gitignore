@@ -1,7 +1,6 @@
 *.js
 *.d.ts
 !jest.config.js
-test
 node_modules
 .prettierignore
 
