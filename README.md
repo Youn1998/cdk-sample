@@ -43,3 +43,7 @@ $ yarn run fmt
 # test
 $ yarn run build && yarn test
 ```
+
+## Architecture
+
+<img src="architecture.drawio.png">
