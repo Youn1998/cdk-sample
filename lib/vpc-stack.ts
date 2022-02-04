@@ -25,7 +25,7 @@ export class VpcStack extends cdk.Stack {
     // create only VPC
     const vpc = new ec2.CfnVPC(this, createVPCName('sample'), {
       cidrBlock: '10.0.0.0/16',
-      tags: [{ key:'Name',value:createVPCName('sample')}]
+      tags: [{ key: 'Name', value: createVPCName('sample') }]
     })
 
     // create subnets
