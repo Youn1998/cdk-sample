@@ -27,8 +27,11 @@ export class VpcStack extends cdk.Stack {
 
   public igw: ec2.CfnInternetGateway
 
-  public ngw1a: ec2.CfnEIP
-  public ngw1c: ec2.CfnEIP
+  public eip1a: ec2.CfnEIP
+  public eip1c: ec2.CfnEIP
+
+  public ngw1a: ec2.CfnNatGateway
+  public ngw1c: ec2.CfnNatGateway
 
   constructor(scope: cdk.App, id: string, props: Props) {
     super(scope, id, props)
@@ -63,17 +66,39 @@ export class VpcStack extends cdk.Stack {
 
     // create Elastic IP
     const createEIPName = utils.createResourceName('eip')(consts.sysName)(props.stage)
-    this.ngw1a = new ec2.CfnEIP(this, createEIPName('1a'), {
+    this.eip1a = new ec2.CfnEIP(this, createEIPName('1a'), {
       domain: 'vpc',
       tags: [{ key: 'Name', value: createEIPName('1a') }]
     })
-    this.ngw1c = new ec2.CfnEIP(this, createEIPName('1c'), {
+    this.eip1c = new ec2.CfnEIP(this, createEIPName('1c'), {
       domain: 'vpc',
       tags: [{ key: 'Name', value: createEIPName('1c') }]
+    })
+
+    // create NAT Gateway
+    const createNGWName = utils.createResourceName('ngw')(consts.sysName)(props.stage)
+    this.ngw1a = new ec2.CfnNatGateway(this, createNGWName('1a'), {
+      allocationId: this.eip1a.attrAllocationId,
+      subnetId: this.public1a.ref,
+      tags: [{ key: 'Name', value: createNGWName('1a') }]
+    })
+    this.ngw1c = new ec2.CfnNatGateway(this, createNGWName('1c'), {
+      allocationId: this.eip1c.attrAllocationId,
+      subnetId: this.public1c.ref,
+      tags: [{ key: 'Name', value: createNGWName('1c') }]
     })
   }
 }
 
+/**
+ * create subnet
+ * @param scope Construct
+ * @param name subnet name
+ * @param cidrBlock subnet cidrblock
+ * @param vpc VPC
+ * @param az Availability Zone
+ * @returns Subnet
+ */
 const createSubnet = (scope: Construct, name: string, cidrBlock: string, vpc: ec2.CfnVPC, az: string) =>
   new ec2.CfnSubnet(scope, name, {
     cidrBlock: cidrBlock,
