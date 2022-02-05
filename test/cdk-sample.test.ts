@@ -3,7 +3,7 @@ import { Template } from 'aws-cdk-lib/assertions'
 import { VpcStack } from '../lib/vpc-stack'
 import { stage, context } from './test-constants'
 
-test('VPC Stack', () => {
+test('VPC', () => {
   const app = new cdk.App()
   // WHEN
   const stack = new VpcStack(app, 'MyTestStack', { stage, context })
@@ -14,7 +14,14 @@ test('VPC Stack', () => {
     CidrBlock: '10.0.0.0/16',
     Tags: [{ Key: 'Name', Value: 'vpc-youn-cdk-dev-sample' }]
   })
+})
 
+test('Subnet', () => {
+  const app = new cdk.App()
+  // WHEN
+  const stack = new VpcStack(app, 'MyTestStack', { stage, context })
+  // THEN
+  const template = Template.fromStack(stack)
   template.resourceCountIs('AWS::EC2::Subnet', 6)
   template.hasResourceProperties('AWS::EC2::Subnet', {
     CidrBlock: '10.0.11.0/24',
@@ -46,4 +53,18 @@ test('VPC Stack', () => {
     AvailabilityZone: 'ap-northeast-1c',
     Tags: [{ Key: 'Name', Value: 'subnet-youn-cdk-dev-db-1c' }]
   })
+})
+
+test('IGW', () => {
+  const app = new cdk.App()
+  // WHEN
+  const stack = new VpcStack(app, 'MyTestStack', { stage, context })
+  // THEN
+  const template = Template.fromStack(stack)
+
+  template.resourceCountIs('AWS::EC2::InternetGateway', 1)
+  template.hasResourceProperties('AWS::EC2::InternetGateway', {
+    Tags: [{ Key: 'Name', Value: 'igw-youn-cdk-dev-sample' }]
+  })
+  template.resourceCountIs('AWS::EC2::VPCGatewayAttachment', 1)
 })

@@ -16,25 +16,47 @@ interface Props extends cdk.StackProps {
  * VpcStack
  */
 export class VpcStack extends cdk.Stack {
+  public vpc: ec2.CfnVPC
+
+  public public1a: ec2.CfnSubnet
+  public public1c: ec2.CfnSubnet
+  public app1a: ec2.CfnSubnet
+  public app1c: ec2.CfnSubnet
+  public db1a: ec2.CfnSubnet
+  public db1c: ec2.CfnSubnet
+
+  public igw: ec2.CfnInternetGateway
+
   constructor(scope: cdk.App, id: string, props: Props) {
     super(scope, id, props)
 
     const createVPCName = utils.createResourceName('vpc')(consts.sysName)(props.stage)
-    const createSubnetName = utils.createResourceName('subnet')(consts.sysName)(props.stage)
 
     // create only VPC
-    const vpc = new ec2.CfnVPC(this, createVPCName('sample'), {
+    this.vpc = new ec2.CfnVPC(this, createVPCName('sample'), {
       cidrBlock: '10.0.0.0/16',
       tags: [{ key: 'Name', value: createVPCName('sample') }]
     })
 
+    const createSubnetName = utils.createResourceName('subnet')(consts.sysName)(props.stage)
+
     // create subnets
-    const publicSubnet1a = createSubnet(this, createSubnetName('pub-1a'), '10.0.11.0/24', vpc, 'ap-northeast-1a')
-    const publicSubnet1c = createSubnet(this, createSubnetName('pub-1c'), '10.0.12.0/24', vpc, 'ap-northeast-1c')
-    const appSubnet1a = createSubnet(this, createSubnetName('app-1a'), '10.0.21.0/24', vpc, 'ap-northeast-1a')
-    const appSubnet1c = createSubnet(this, createSubnetName('app-1c'), '10.0.22.0/24', vpc, 'ap-northeast-1c')
-    const dbSubnet1a = createSubnet(this, createSubnetName('db-1a'), '10.0.31.0/24', vpc, 'ap-northeast-1a')
-    const dbSubnet1c = createSubnet(this, createSubnetName('db-1c'), '10.0.32.0/24', vpc, 'ap-northeast-1c')
+    this.public1a = createSubnet(this, createSubnetName('pub-1a'), '10.0.11.0/24', this.vpc, 'ap-northeast-1a')
+    this.public1c = createSubnet(this, createSubnetName('pub-1c'), '10.0.12.0/24', this.vpc, 'ap-northeast-1c')
+    this.app1a = createSubnet(this, createSubnetName('app-1a'), '10.0.21.0/24', this.vpc, 'ap-northeast-1a')
+    this.app1c = createSubnet(this, createSubnetName('app-1c'), '10.0.22.0/24', this.vpc, 'ap-northeast-1c')
+    this.db1a = createSubnet(this, createSubnetName('db-1a'), '10.0.31.0/24', this.vpc, 'ap-northeast-1a')
+    this.db1c = createSubnet(this, createSubnetName('db-1c'), '10.0.32.0/24', this.vpc, 'ap-northeast-1c')
+
+    // create internet gateway
+    const createIgwName = utils.createResourceName('igw')(consts.sysName)(props.stage)
+    this.igw = new ec2.CfnInternetGateway(this, createIgwName('sample'), {
+      tags: [{ key: 'Name', value: createIgwName('sample') }]
+    })
+    new ec2.CfnVPCGatewayAttachment(this, createIgwName('attachment'), {
+      vpcId: this.vpc.ref,
+      internetGatewayId: this.igw.ref
+    })
   }
 }
 

@@ -19,5 +19,5 @@ const vpcStack = new VpcStack(app, createResourceName('vpc'), {
   context
 })
 
-// tag to stuck
+// tag to stack
 cdk.Tags.of(vpcStack).add('Name', consts.sysName)
