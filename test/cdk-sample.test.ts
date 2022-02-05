@@ -68,3 +68,21 @@ test('IGW', () => {
   })
   template.resourceCountIs('AWS::EC2::VPCGatewayAttachment', 1)
 })
+
+test('EIP', () => {
+  const app = new cdk.App()
+  // WHEN
+  const stack = new VpcStack(app, 'MyTestStack', { stage, context })
+  // THEN
+  const template = Template.fromStack(stack)
+
+  template.resourceCountIs('AWS::EC2::EIP', 2)
+  template.hasResourceProperties('AWS::EC2::EIP', {
+    Domain: 'vpc',
+    Tags: [{ Key: 'Name', Value: 'eip-youn-cdk-dev-1a' }]
+  })
+  template.hasResourceProperties('AWS::EC2::EIP', {
+    Domain: 'vpc',
+    Tags: [{ Key: 'Name', Value: 'eip-youn-cdk-dev-1c' }]
+  })
+})

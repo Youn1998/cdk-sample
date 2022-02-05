@@ -27,6 +27,9 @@ export class VpcStack extends cdk.Stack {
 
   public igw: ec2.CfnInternetGateway
 
+  public ngw1a: ec2.CfnEIP
+  public ngw1c: ec2.CfnEIP
+
   constructor(scope: cdk.App, id: string, props: Props) {
     super(scope, id, props)
 
@@ -56,6 +59,17 @@ export class VpcStack extends cdk.Stack {
     new ec2.CfnVPCGatewayAttachment(this, createIgwName('attachment'), {
       vpcId: this.vpc.ref,
       internetGatewayId: this.igw.ref
+    })
+
+    // create Elastic IP
+    const createEIPName = utils.createResourceName('eip')(consts.sysName)(props.stage)
+    this.ngw1a = new ec2.CfnEIP(this, createEIPName('1a'), {
+      domain: 'vpc',
+      tags: [{ key: 'Name', value: createEIPName('1a') }]
+    })
+    this.ngw1c = new ec2.CfnEIP(this, createEIPName('1c'), {
+      domain: 'vpc',
+      tags: [{ key: 'Name', value: createEIPName('1c') }]
     })
   }
 }
