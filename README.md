@@ -22,6 +22,8 @@ $ yarn
 ```sh
 # emits the synthesized CloudFormation template
 $ yarn cdk synth
+# without metadata
+$ yarn cdk synth --path-metadata false
 
 # compare deployed stack with current state
 $ yarn cdk diff {stack name}
@@ -32,6 +34,8 @@ $ yarn cdk diff --all
 $ yarn cdk deploy --context stage={env} {stack name}
 # default env=dev
 $ yarn cdk deploy --all
+# without metadata
+$ yarn cdk deploy --all --path-metadata false
 
 # destroy stacks
 $ yarn cdk destroy --context stage={env} {stack name}
