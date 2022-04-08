@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib'
 import * as ec2 from 'aws-cdk-lib/aws-ec2'
-import { Construct } from 'constructs'
+import { Construct } from 'Constructs'
 import * as consts from '../common/constant'
 import * as utils from '../common/utils'
 

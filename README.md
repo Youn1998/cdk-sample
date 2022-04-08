@@ -1,6 +1,7 @@
 # Sample CDK TypeScript project
 
 ## OverView
+
 This is a sample project for TypeScript development with CDK.
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
@@ -47,7 +48,3 @@ $ yarn run fmt
 # test
 $ yarn run build && yarn test
 ```
-
-## Architecture(WIP)
-
-<img src="architecture.drawio.png">
